@@ -1,0 +1,159 @@
+package assn02;
+
+// import java.text.SimpleDateFormat;
+//import java.util.Date;
+
+import java.util.Objects;
+import java.util.Scanner;
+
+public class JavaWarmUp {
+
+
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+
+        // build the list (another way: split, return array)
+        int maxTransactions = Integer.parseInt(s.nextLine());
+         Transactions[] sList = new Transactions[maxTransactions];
+
+        // record data in list  (another way: use file)
+
+            for (int i = 0; i < maxTransactions; i++) {
+                String a = s.nextLine();
+                String[] split = a.split(" ");
+                String _date = split[0];
+                String _time = split[1];
+                String _category = split[2];
+                Double _price = Double.parseDouble(split[3]);
+                Integer _quantity = Integer.parseInt(split[4]);
+                Double _rating = Double.parseDouble(split[5]);
+                Integer _duration = Integer.parseInt(split[6]);
+                Transactions newTransactions = new Transactions(_date,_time,_category,_price,_quantity,_rating,_duration);
+                sList[i] = newTransactions;
+            }
+
+
+        //max price
+        int index = getMaxPriceIndex(maxTransactions, sList);
+        System.out.println("Highest per unit sale:");
+        System.out.println("\t" + "When: " + sList[index]._date + " " + sList[index]._time);
+        System.out.println("\t" + "Category: " + sList[index]._category);
+        System.out.println("\t" + "Price: " + String.format("%.2f",sList[index]._price));
+        System.out.println("\t" + "Rating: " + sList[index]._rating);
+
+
+
+        //min price
+        int index2 = getMinPriceIndex(maxTransactions, sList);
+        System.out.println("Lowest per unit sale:");
+        System.out.println("\t" + "When: " + sList[index2]._date + " " +  sList[index2]._time);
+        System.out.println("\t" + "Category: " + sList[index2]._category);
+        System.out.println("\t" + "Price: " + String.format("%.2f",sList[index2]._price));
+        System.out.println("\t" + "Rating: " + sList[index2]._rating);
+
+
+        //book averages
+        averageDisplay("book", maxTransactions, sList);
+
+        //jewelry averages
+        averageDisplay("jewelry", maxTransactions, sList);
+
+        //phone averages
+        averageDisplay("phone", maxTransactions, sList);
+
+    }
+
+
+    public static class Transactions {
+        String _date;
+        // String pattern = "HH:MM";
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        // String time = "";
+        //String _time = simpleDateFormat.format(time);
+        String _time;
+        String _category;
+        double _price;
+        int _quantity;
+        double _rating;
+        int _duration;
+
+
+        public Transactions(String date, String time, String category, Double price, Integer quantity, Double rating, Integer duration) {
+            this._date = date;
+            this._time = time;
+            this._category = category;
+            this._price = price;
+            this._quantity = quantity;
+            this._rating = rating;
+            this._duration = duration;
+        
+        }
+    }
+
+
+    //Methods
+
+    public static int getMaxPriceIndex(int maxTransactions,Transactions[] sList) {
+        int index = 0;
+        double x = 0.00;
+        double[] arr = new double[maxTransactions];
+        for (int i = 0; i < maxTransactions; i++) {
+            arr[i] = sList[i]._price;
+        }
+        for (int j = 0; j < arr.length; j++) {
+            if (x <= arr[j] ) {
+                x = arr[j];
+                index = j;
+            }
+        }
+        return index;
+    }
+
+
+
+    public static int getMinPriceIndex(int maxTransactions, Transactions[] sList) {
+        int index = 0;
+        double x = 10000000000000000000000000000.00;
+        double[] arr = new double[maxTransactions];
+        for (int i = 0; i < maxTransactions; i++) {
+            arr[i] = sList[i]._price;
+        }
+        for (int j = 0; j < arr.length; j++) {
+            if (arr[j] <= x) {
+                x = arr[j];
+                index = j;
+            }
+        }
+        return index;
+    }
+
+
+    public static void averageDisplay(String name, int maxTransactions, Transactions[] sList) {
+        System.out.println("Averages by " + name );
+        int quantity = 0;
+        int transactionQuant = 0;
+        double PriceTotal = 0.00;
+        double RatingTotal = 0.00;
+        double DurationTotal = 0.00;
+        //int[] index = new int[maxTransactions];
+            for (int i = 0; i < maxTransactions; i++) {
+                if (Objects.equals(sList[i]._category, name)) {
+                    transactionQuant += 1;
+                    quantity += sList[i]._quantity;
+                    PriceTotal += sList[i]._price * sList[i]._quantity;
+                    RatingTotal += sList[i]._rating;
+                    DurationTotal += sList[i]._duration;
+                }
+            }
+
+        double PriceAverage = PriceTotal / quantity;
+        double RatingAverage = RatingTotal / transactionQuant;
+        double DurationAverage = DurationTotal / transactionQuant;
+        System.out.println("\t" + "Quantity: " + quantity);
+        System.out.println("\t" + "Price: " + String.format("%.2f",PriceAverage));
+        System.out.println("\t" + "Rating: " + String.format("%.2f",RatingAverage));
+        System.out.println("\t" + "Duration: " + String.format("%.2f",DurationAverage));
+    }
+
+
+}
